@@ -1,0 +1,98 @@
+select *
+from wus.wm_actual
+where datestamp between '2023-01-01' and '2023-01-15'
+limit 10;
+-------------------------------------------------------
+SELECT * 
+FROM adp.WM_ADPEmployee
+WHERE left (PositionID,3)in ('Y3U','S1S','6A1')
+AND PositiveStatus = 'Active'
+ORDER BY StatusEffectiveDate desc;
+
+--------------SALES TRANSFER---------------------------------------
+SELECT DateStamp, StoreNumber, StoreUserName, FirstName, LastName, JobTitle, Itemnumber, EquipmentName, WARPOrderID, TMO_OrderID, Qty, Operator, Register, LineType, LineStatus, TrxType, Commission, Commission_status, Carrier, EmployeeID
+FROM wus.wm_actual a1
+LEFT JOIN adp.WM_ADPEmployee a2
+ON a1.EmployeeID = RIGHT(a2.FileNumber,5)
+--SELECT * FROM wus.wm_actual
+WHERE EmployeeID IN ('50894')
+--and StoreNumber IN ('1985')
+--AND StoreUserName IN ('55784 ALINDSEY','55784ALINDSEY','OSL57784')
+--where WARPOrderID IN ('365673744')--,'2033002995') --3059NIN35121
+--where TMO_OrderID IN ('112237286760422')--,'119594698669834')
+AND DateStamp between '2022-12-19' AND '2022-12-28' 
+--AND TrxType IN ('TPP')
+--AND Carrier LIKE '%T-Mobile%'	
+--AND Operator = 1980
+ORDER BY DateStamp DESC, ItemNumber;
+
+------------------MISSING SALE------------------------------------
+SELECT * FROM WUS.WM_DAILY_FEED 
+WHERE TMO_OrderID IN ('115307096575923')
+--WHERE warporderID IN ('1410960783')--,'1257811768') --,'2033002995')
+
+-----------------EMPLOYEE DETAILS--------------------------
+SELECT
+	FileNumber,
+	FirstName, 
+	LastName, 
+	JobTitle, 
+	PersonalEmail,
+	WorkEmail,
+	JobFunctionCode, 
+	PositiveStatus,
+	HireDate,
+	TerminationDate, 
+	HomeDeptCode, 
+	StoreNumber, 
+	Region, 
+	District, 
+	Team, 
+	TLEmployeeID, 
+	ADP_TLName, 
+	DMEmployeeID, 
+	ADP_DMName,
+	WorkEmail
+FROM adp.WM_ADPEmployee ADP1
+LEFT JOIN WUS.US_StoreMaster ST1
+ON ADP1.HomeDeptCode = ST1.CostCenter  
+WHERE FileNumber IN ('011022')
+--Team LIKE '%1602h%' AND PositiveStatus <> 'Terminated'
+--StoreNumber IN ('5410') AND PositiveStatus <> 'Terminated
+--Lastname LIKE '%WITH%' AND Firstname LIKE '%VIN%' --OR LastName LIKE '%Mink%' AND FirstName LIKE '%Jordan%'
+--OR District IN ('1503') 
+--AND PositiveStatus <> 'Terminated'
+ORDER BY FirstName desc;
+------------------------------------------------------------------------------------------------
+ATT SALES TRANSFER
+SELECT * 
+FROM att.sc_att_dtr_sales
+where "OrderInfo_OrderNumber" in ('DSI80800838');
+OR
+where "PDC_OrderID" like '%53235862%';
+
+---------------------------------------
+----Missed commission
+select *
+from adp.WM_ADPEmployee
+where LastName='Eaves'
+order by firstname
+--064484
+--7P6QRJOO0
+
+select TotalCommission,Comments,*
+from biapps.wmus_commission_payroll
+where AssociateID ='7P6QRJOO0';
+
+select *
+from biapps.WMUS_MISSED_COMP_PAYROLL
+where AssociateID ='7P6QRJOO0'
+----Employee Commission-----
+select FirstName, LastName, EmployeeID, Month, TotalCommission 
+from wus.wmus_employee_commission
+where EmployeeID = '064484' and year = 2023 and month = 01
+
+-----Bonus--
+SELECT teamcommid, "month", "year", employeeid, lastname, firstname, homedeptcode, positivestatus, terminationdate, hiredate, jobfunctioncode, associateid, positionid, jobtitle, reportstoassociateid, team, total_stores, acc_t1_storeqty, acc_t1_atrisk, acc_t2_storeqty, acc_t2_atrisk, acc_t3_storeqty, acc_t3_atrisk, acc_t4_storeqty, acc_t4_atrisk, prepaid_t1_storeqty, prepaid_t1_atrisk, prepaid_t2_storeqty, prepaid_t2_atrisk, prepaid_t3_storeqty, prepaid_t3_atrisk, prepaid_t4_storeqty, prepaid_t4_atrisk, postpaid_t1_storeqty, postpaid_t1_atrisk, postpaid_t2_storeqty, postpaid_t2_atrisk, postpaid_t3_storeqty, postpaid_t3_atrisk, postpaid_t4_storeqty, postpaid_t4_atrisk, postpaid_t5_storeqty, postpaid_t5_atrisk, postpaid_t6_storeqty, postpaid_t6_atrisk, postpaid_t7_storeqty, postpaid_t7_atrisk, postpaid_t8_storeqty, postpaid_t8_atrisk, postpaid_t9_storeqty, postpaid_t9_atrisk, postpaid_t10_storeqty, postpaid_t10_atrisk, carep_t1_storeqty, carep_t1_atrisk, carep_t2_storeqty, carep_t2_atrisk, carep_t3_storeqty, carep_t3_atrisk, carep_t4_storeqty, carep_t4_atrisk, postpaidme_t1_storeqty, postpaidme_t1_atrisk, postpaidme_t2_storeqty, postpaidme_t2_atrisk, postpaidme_t3_storeqty, postpaidme_t3_atrisk, postpaidme_t4_storeqty, postpaidme_t4_atrisk, personal_commission, atrisk_amount, payoutstatus, payoutdate, spiff_type, spiff_amount, adjustment_type, adjustment, updated_date
+FROM wus.wmus_tl_at_risk
+where EmployeeID = '34884' and year = 2023 and month = 01;
